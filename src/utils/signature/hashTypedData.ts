@@ -12,12 +12,8 @@ import {
 import { concat } from '../data/concat.js'
 import { type ToHexErrorType, toHex } from '../encoding/toHex.js'
 import { type Keccak256ErrorType, keccak256 } from '../hash/keccak256.js'
-import {
-  type GetTypesForEIP712DomainErrorType,
-  type ValidateTypedDataErrorType,
-  getTypesForEIP712Domain,
-  validateTypedData,
-} from '../typedData.js'
+import { type GetTypesForEIP712DomainErrorType, type ValidateTypedDataErrorType } from '../typedData.js'
+import * as typedData from '../typedData.js' // this is the key line we need to change for it to work for us
 
 type MessageTypeProperty = {
   name: string
@@ -50,13 +46,13 @@ export function hashTypedData<
     primaryType,
   } = parameters as HashTypedDataParameters
   const types = {
-    EIP712Domain: getTypesForEIP712Domain({ domain }),
+    EIP712Domain: typedData.getTypesForEIP712Domain({ domain }),
     ...parameters.types,
   }
 
   // Need to do a runtime validation check on addresses, byte ranges, integer ranges, etc
   // as we can't statically check this with TypeScript.
-  validateTypedData({
+  typedData.validateTypedData({
     domain,
     message,
     primaryType,
